@@ -368,8 +368,6 @@ try:
             else:
                 raise ValueError("span must be 8, 16 or 32")
             span = span >> 3  # for the buffer
-            if isinstance(mem, bytearray):
-                mem = uctypes.addressof(mem)
             Mem.__init__(self, name, mem, offset, span, False)
             self.layout = {}
             sav = CACHE.get(self.name, self._hsh)
@@ -384,9 +382,9 @@ try:
                 self.layout = sav
 
             self.buf_adr = uctypes.addressof(self.buf)
-            self.mmtd = machine.mem32 if span == 4 else machine.mem16 if span == 2 else machine.mem8
             self.struct = uctypes.struct(self.buf_adr, self.layout, uctypes.LITTLE_ENDIAN)
             self.ld_buf()
+        '''
 
         def post_all(self):
             self.mmtd[self.mem + self.memstart] = self.mmtd[self.buf_adr]
@@ -394,6 +392,7 @@ try:
 
         def ld_buf(self):
             self.buf[:] = self.mmtd[self.mem + self.memstart].to_bytes(self.span, 'little')
+        '''
 
 except NameError:
     pass
